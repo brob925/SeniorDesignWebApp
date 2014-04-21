@@ -5,7 +5,7 @@
 	date_default_timezone_set("America/Chicago");
 
 	// open database
-	$db = new PDO("sqlite:database.sqlite") or die("cannot open the database");
+	$db = new PDO("sqlite:database2.sqlite") or die("cannot open the database");
 
 	// get all nodes
 	$getNodes = $db->prepare("SELECT * FROM nodes");
@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script src="Chart.js"></script>
+	<script src='http://www.google.com/jsapi'></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<style>
 		html {
@@ -90,17 +90,23 @@
 			font-size:18px;
 			cursor:pointer;
 		}
+		#chart {
+			border:1px solid white;
+		}
 	</style>
 	<script>
+	google.load('visualization', '1.1', {'packages':['annotationchart']});
+	google.setOnLoadCallback(drawChart);
 	var nodeActive = 1;
 	var tempActive = true;
 	var locationActive = false;
 	var radActive = false;
 	var co2Active = false;
-	function drawChart(nodeId) {
-		nodeActive = nodeId;
+	var chart;
+	function drawChart() {
+		clearChart();
 		$('.nodeSelection').css('background-color', 'gray');
-		$('#node'+nodeId).css('background-color', 'rgba(151, 187, 205, 1.0)');
+		$('#node'+nodeActive).css('background-color', 'rgba(151, 187, 205, 1.0)');
 		if (locationActive) {
 			$('#responseDiv').html('<img src="underconstruction.gif"/>');
 			$('.sensorSelection').css('background-color', 'gray');
@@ -116,23 +122,31 @@
 		}
 		xmlhttp.onreadystatechange=function() {
 			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-				$('#responseDiv').html('<canvas id="chart" width="600" height="400"></canvas>');
 				var responseArray = xmlhttp.responseText.split(';');
-				var responseLabels = responseArray[0].split(',');
-				var responseData = responseArray[1].split(',');
-				var response = responseArray[0].split(',');
-				var ctx = $('#chart').get(0).getContext('2d');
-				var data = {
-					labels : responseLabels,
-					datasets : [ {
-						fillColor : 'rgba(151, 187, 205, 0.5)',
-						strokeColor : 'rgba(151, 187, 205, 1.0)',
-						pointColor : 'rgba(151, 187, 205, 1.0)',
-						pointStrokeColor : '#ffffff',
-						data : responseData
-					} ]
+				var dataType = responseArray[0];
+				var datetimes = responseArray[1].split(',');
+				var data = responseArray[2].split(',');
+				var chartData = new google.visualization.DataTable();
+				chartData.addColumn('datetime', 'Date');
+				chartData.addColumn('number', dataType);
+				var rows = [];
+				for (var i=0; i<data.length; i++) {
+					rows.push([new Date(datetimes[i]), Number(data[i])]);
 				}
-				var chart = new Chart(ctx).Line(data);
+				chartData.addRows(rows);
+				chart = new google.visualization.AnnotationChart(document.getElementById('chart'));
+				if (data.length > 25) {
+					var options = {
+						fill:20,
+						zoomEndTime:new Date(datetimes[data.length-1]),
+						zoomStartTime:new Date(datetimes[data.length-25]),
+					};
+				} else {
+					var options = {
+						fill:20,
+					};
+				}
+				chart.draw(chartData, options);
 			}
 		}
 		var getURL = "";
@@ -150,7 +164,7 @@
 			getURL = "getCo2.php";
 			$('#carbonDioxide').css('background-color', 'rgba(151, 187, 205, 1.0)');
 		}
-		xmlhttp.open("GET",getURL+"?nodeid="+nodeId,true);
+		xmlhttp.open("GET",getURL+"?nodeid="+nodeActive,true);
 		xmlhttp.send();
 	}
 	
@@ -160,7 +174,7 @@
 		locationActive = false;
 		radActive = false;
 		co2Active = false;
-		drawChart(nodeActive);
+		drawChart();
 	}
 	
 	function locationClick() {
@@ -169,7 +183,7 @@
 		locationActive = true;
 		radActive = false;
 		co2Active = false;
-		drawChart(nodeActive);
+		drawChart();
 	}
 	
 	function radClick() {
@@ -178,7 +192,7 @@
 		locationActive = false;
 		radActive = true;
 		co2Active = false;
-		drawChart(nodeActive);
+		drawChart();
 	}
 	
 	function co2Click() {
@@ -187,10 +201,13 @@
 		locationActive = false;
 		radActive = false;
 		co2Active = true;
-		drawChart(nodeActive);
+		drawChart();
 	}
 	
-	$(window).load(drawChart(nodeActive));
+	function clearChart() {
+		$('#chart').empty();
+	}
+	
 	</script>
 </head>
 
@@ -202,7 +219,7 @@
 		$numNodes = count($nodes);
 		$divWidth = (799-$numNodes)/$numNodes;
 		foreach($nodes as $node) {?>
-			<div class="nodeSelection" id="node<?php echo $node[0]; ?>" style="width:<?php echo $divWidth ?>px;" onclick="drawChart(<?php echo $node[0]; ?>)">Node <?php echo $node[0]; ?></div>
+			<div class="nodeSelection" id="node<?php echo $node[0]; ?>" style="width:<?php echo $divWidth ?>px;" onclick="nodeActive=<?php echo $node[0]; ?>;drawChart()">Node <?php echo $node[0]; ?></div>
 		<?php } ?>
 		<br clear="all">
 	</div>
@@ -212,6 +229,6 @@
 		<div class="sensorSelection" id="radiation" onclick="radClick()">Radiation</div>
 		<div class="sensorSelection" id="carbonDioxide" onclick="co2Click()">Carbon Dioxide</div>
 	</div>
-	<div id="responseDiv"></div>
+	<div id="#responseDiv"><div id="chart" style="width:598px;height:408px;float:left;"></div></div>
 	<br clear="all">
 </body>
