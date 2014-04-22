@@ -14,11 +14,11 @@ for i in range(0,3):
     randTemp = random.randint(700, 800);
     randTemp = randTemp/10.0;
     temperature.append(randTemp);
-    randLat = random.randint(30627970, 30627980);
-    randLat = randLat/1000000.0;
+    randLat = random.randint(30629, 30639);
+    randLat = randLat/1000.0;
     latitude.append(randLat);
-    randLong = random.randint(96334400, 96334410);
-    randLong = -randLong/1000000.0;
+    randLong = random.randint(96329, 96339);
+    randLong = -randLong/1000.0;
     longitude.append(randLong);
     randRad = random.randint(13500, 14150);
     randRad = randRad/10.0;

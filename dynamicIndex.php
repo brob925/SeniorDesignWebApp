@@ -17,7 +17,11 @@
 <html>
 <head>
 	<script src='http://www.google.com/jsapi'></script>
+	<script src='https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false'></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+	<script src="boxIt.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="boxIt.css">
 	<style>
 		html {
 			background-image:url('stardust.png');
@@ -93,11 +97,25 @@
 		#chart {
 			border:1px solid white;
 		}
+		#selectors {
+			text-align:left;
+			background-color:gray;
+			float:left;
+			width:800px;
+			height:40px;
+		}
+		.selectboxit-container {
+			margin-top:4px;
+			margin-left:151px;
+		}
+		.selectboxit-container .selectboxit-options {
+			width:141px;
+		}
 	</style>
 	<script>
 	google.load('visualization', '1.1', {'packages':['annotationchart']});
 	google.setOnLoadCallback(drawChart);
-	var nodeActive = 1;
+	var nodeActive = <?php echo $nodes[0][0]; ?>;
 	var tempActive = true;
 	var locationActive = false;
 	var radActive = false;
@@ -108,9 +126,7 @@
 		$('.nodeSelection').css('background-color', 'gray');
 		$('#node'+nodeActive).css('background-color', 'rgba(151, 187, 205, 1.0)');
 		if (locationActive) {
-			$('#responseDiv').html('<img src="underconstruction.gif"/>');
-			$('.sensorSelection').css('background-color', 'gray');
-			$('#location').css('background-color', 'rgba(151, 187, 205, 1.0)');
+			drawMap();
 			return;
 		}
 		var xmlhttp;
@@ -154,9 +170,6 @@
 		if (tempActive) {
 			getURL = "getTemps.php";
 			$('#temperature').css('background-color', 'rgba(151, 187, 205, 1.0)');
-		} else if (locationActive) {
-			getURL = "getLocation.php";
-			$('#location').css('background-color', 'rgba(151, 187, 205, 1.0)');
 		} else if (radActive) {
 			getURL = "getRad.php";
 			$('#radiation').css('background-color', 'rgba(151, 187, 205, 1.0)');
@@ -165,6 +178,57 @@
 			$('#carbonDioxide').css('background-color', 'rgba(151, 187, 205, 1.0)');
 		}
 		xmlhttp.open("GET",getURL+"?nodeid="+nodeActive,true);
+		xmlhttp.send();
+	}
+	
+	var map;
+	function drawMap() {
+		$('.sensorSelection').css('background-color', 'gray');
+		$('#location').css('background-color', 'rgba(151, 187, 205, 1.0)');
+		var xmlhttp;
+		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}
+		else {// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function() {
+			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+				var responseArray = xmlhttp.responseText.split(';');
+				var dataType = responseArray[0];
+				var datetimes = responseArray[1].split(',');
+				var latitudes = responseArray[2].split(',');
+				var longitudes = responseArray[3].split(',');
+				var maxIndex = datetimes.length-1;
+				var mapOptions = {
+					zoom: 14,
+					center: new google.maps.LatLng(latitudes[maxIndex], longitudes[maxIndex])
+				};
+				map = new google.maps.Map(document.getElementById('chart'),
+					mapOptions);
+				
+				for (var i=maxIndex; i>maxIndex-5; i--) {
+					var contentString = 'Latitude: ' + latitudes[i] + '<br>' +
+						'Longitude: ' + longitudes[i] + '<br>' +
+						'Date and Time: ' + datetimes[i];
+					var infowindow = new google.maps.InfoWindow({
+						content: contentString,
+						maxWidth: 200
+					});
+					
+					var marker = new google.maps.Marker({
+						position: new google.maps.LatLng(latitudes[i], longitudes[i]),
+						map: map,
+						title: datetimes[i]
+					});
+					
+					google.maps.event.addListener(marker, 'click', function() {
+						infowindow.open(map,marker);
+					});
+				}
+			}
+		}
+		xmlhttp.open("GET","getLocation.php?nodeid="+nodeActive,true);
 		xmlhttp.send();
 	}
 	
@@ -208,27 +272,46 @@
 		$('#chart').empty();
 	}
 	
+	$(document).ready(function () {
+		$('select').selectBoxIt();
+		
+		$(document).on('change', '.nodeSelect', function() {
+			nodeActive = $(this[this.selectedIndex]).val();
+			drawChart();
+		});
+		
+		$(document).on('change', '.sensorSelect', function() {
+			var selection = $(this[this.selectedIndex]).val();
+			if (selection == 'temperature') {
+				tempClick();
+			} else if (selection == 'location') {
+				locationClick();
+			} else if (selection == 'radiation') {
+				radClick();
+			} else if (selection == 'carbonDioxide') {
+				co2Click();
+			}
+		});
+	});
 	</script>
 </head>
 
 <body>
 	<img src="caution.gif">
 	<h1>ECEN 403 - Group 22's Project Website</h1>
-	<div id="nodeSelector">
-		<?php 
-		$numNodes = count($nodes);
-		$divWidth = (799-$numNodes)/$numNodes;
-		foreach($nodes as $node) {?>
-			<div class="nodeSelection" id="node<?php echo $node[0]; ?>" style="width:<?php echo $divWidth ?>px;" onclick="nodeActive=<?php echo $node[0]; ?>;drawChart()">Node <?php echo $node[0]; ?></div>
-		<?php } ?>
-		<br clear="all">
+	<div id="selectors">
+		<select class="nodeSelect">
+			<?php foreach($nodes as $node) {?>
+				<option value="<?php echo $node[0]; ?>">Node <?php echo $node[0]; ?></option>
+			<?php } ?>
+		</select>
+		<select class="sensorSelect">
+			<option value="temperature">Temperature</option>
+			<option value="location">Location</option>
+			<option value="radiation">Radiation</option>
+			<option value="carbonDioxide">Carbon Dioxide</option>
+		</select>
 	</div>
-	<div id="sensorSelector">
-		<div class="sensorSelection" id="temperature" onclick="tempClick()">Temperature</div>
-		<div class="sensorSelection" id="location" onclick="locationClick()">Location</div>
-		<div class="sensorSelection" id="radiation" onclick="radClick()">Radiation</div>
-		<div class="sensorSelection" id="carbonDioxide" onclick="co2Click()">Carbon Dioxide</div>
-	</div>
-	<div id="#responseDiv"><div id="chart" style="width:598px;height:408px;float:left;"></div></div>
+	<div id="#responseDiv"><div id="chart" style="width:798px;height:494px;float:left;"></div></div>
 	<br clear="all">
 </body>
