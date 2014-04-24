@@ -23,6 +23,7 @@
 	<script src="boxIt.js"></script>
 	<script src="moment.js"></script>
 	<link rel="stylesheet" href="boxIt.css">
+	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 	<style>
 		html {
 			background-image:url('stardust.png');
@@ -36,26 +37,29 @@
 			margin-bottom:0px;
 			padding:50px;
 			padding-top:0px;
-			font-family:Arial;
+			font-family:Helvetica, Arial;
 			background-color:#E0E0E0;
 		}
 		#chart {
-			border:1px solid white;
-			-moz-box-shadow:    4px 4px 5px 2px gray;
-			-webkit-box-shadow: 4px 4px 5px 2px gray;
-			box-shadow:         4px 4px 5px 2px gray;
+			border-top:1px solid white;
+			border-left:1px solid white;
+			border-right:1px solid white;
+			border-bottom:none;
+			-moz-box-shadow:    4px 4px 5px 2px darkslategray;
+			-webkit-box-shadow: 4px 4px 5px 2px darkslategray;
+			box-shadow:         4px 4px 5px 2px darkslategray;
 		}
 		#selectors {
 			text-align:left;
-			background-color:gray;
+			background-color:lightslategray;
 			float:left;
 			width:798px;
 			height:40px;
 			border-left:1px solid white;
 			border-right:1px solid white;
-			--moz-box-shadow:   4px 4px 5px 2px gray;
-			-webkit-box-shadow: 4px 4px 5px 2px gray;
-			box-shadow:         4px 4px 5px 2px gray;
+			--moz-box-shadow:   4px 4px 5px 2px darkslategray;
+			-webkit-box-shadow: 4px 4px 5px 2px darkslategray;
+			box-shadow:         4px 4px 5px 2px darkslategray;
 		}
 		.selectboxit-container {
 			margin-top:4px;
@@ -64,36 +68,39 @@
 		.selectboxit-container .selectboxit-options {
 			width:141px;
 		}
-		table{
+		#chart table{
 			border-collapse: collapse;
 			border-spacing: 0;
 			width:100%;
 			height:100%;
 			margin:0px;padding:0px;
-		}tr:last-child td:last-child {
+		}
+		#chart tr:last-child td:last-child {
 			-moz-border-radius-bottomright:0px;
 			-webkit-border-bottom-right-radius:0px;
 			border-bottom-right-radius:0px;
 		}
-		table tr:first-child td:first-child {
+		#chart table tr:first-child td:first-child {
 			-moz-border-radius-topleft:0px;
 			-webkit-border-top-left-radius:0px;
 			border-top-left-radius:0px;
 		}
-		table tr:first-child td:last-child {
+		#chart table tr:first-child td:last-child {
 			-moz-border-radius-topright:0px;
 			-webkit-border-top-right-radius:0px;
 			border-top-right-radius:0px;
-		}tr:last-child td:first-child{
+		}
+		#chart tr:last-child td:first-child{
 			-moz-border-radius-bottomleft:0px;
 			-webkit-border-bottom-left-radius:0px;
 			border-bottom-left-radius:0px;
-		}tr:hover td{
+		}
+		#chart tr:hover td{
 			background-color:lightslategray;
 		}
-		tr:nth-child(odd) { background-color:#aad4ff; }
-		tr:nth-child(even) { background-color:#ffffff; }
-		td{
+		#chart tr:nth-child(odd) { background-color:#aad4ff; }
+		#chart tr:nth-child(even) { background-color:#ffffff; }
+		#chart td{
 			vertical-align:middle;	
 			border:1px solid #ffffff;
 			border-width:0px 1px 1px 0px;
@@ -103,14 +110,17 @@
 			font-family:Arial;
 			font-weight:normal;
 			color:#000000;
-		}tr:last-child td{
+		}
+		#chart tr:last-child td{
 			border-width:0px 1px 0px 0px;
-		}tr td:last-child{
+		}
+		#chart tr td:last-child{
 			border-width:0px 0px 1px 0px;
-		}tr:last-child td:last-child{
+		}
+		#chart tr:last-child td:last-child{
 			border-width:0px 0px 0px 0px;
 		}
-		tr:first-child td{
+		#chart tr:first-child td{
 			background:-o-linear-gradient(bottom, #005fbf 5%, #003f7f 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #005fbf), color-stop(1, #003f7f) );
 			background:-moz-linear-gradient( center top, #005fbf 5%, #003f7f 100% );
 			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#005fbf", endColorstr="#003f7f");	background: -o-linear-gradient(top,#005fbf,003f7f);
@@ -123,17 +133,63 @@
 			font-weight:bold;
 			color:#ffffff;
 		}
-		tr:first-child:hover td{
+		#chart tr:first-child:hover td{
 			background:-o-linear-gradient(bottom, #005fbf 5%, #003f7f 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #005fbf), color-stop(1, #003f7f) );
 			background:-moz-linear-gradient( center top, #005fbf 5%, #003f7f 100% );
 			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#005fbf", endColorstr="#003f7f");	background: -o-linear-gradient(top,#005fbf,003f7f);
 			background-color:#005fbf;
 		}
-		tr:first-child td:first-child{
+		#chart tr:first-child td:first-child{
 			border-width:0px 0px 1px 0px;
 		}
-		tr:first-child td:last-child{
+		#chart tr:first-child td:last-child{
 			border-width:0px 0px 1px 1px;
+		}
+		.ui-datepicker {
+			background-color:#E0E0E0;
+			opacity:0.9;
+			width:250px;
+			height:auto;
+			font-size:12px;
+		}
+		#dateSelect {
+			background-color:lightslategray;
+			float:left;
+			width:798px;
+			height:40px;
+			position:relative;
+			border-left:1px solid white;
+			border-right:1px solid white;
+			-moz-box-shadow:   4px 4px 5px 2px darkslategray;
+			-webkit-box-shadow: 4px 4px 5px 2px darkslategray;
+			box-shadow:         4px 4px 5px 2px darkslategray;
+			font-size:14px;
+		}
+		#startDate {
+			float:left;
+			margin-left:69px;
+			margin-top:9px;
+			width:169px;
+			cursor:text;
+		}
+		#endDate {
+			float:left;
+			margin-left:69px;
+			margin-top:9px;
+			width:169px;
+			cursor:text;
+		}
+		#submitDate {
+			float:left;
+			margin-left:75px;
+			margin-top:8px;
+			width:173px;
+		}
+		.ui-button-text-only .ui-button-text {
+			padding-top:2px;
+			padding-bottom:2px;
+			color:black;
+			font-family:Helvetica, Arial;
 		}
 	</style>
 	<script>
@@ -146,6 +202,9 @@
 	var co2Active = false;
 	var graphicActive = true;
 	var tableActive = false;
+	var startDate = 'null';
+	var endDate = 'null';
+	
 	var chart;
 	function drawGraphic() {
 		clearChart();
@@ -155,6 +214,8 @@
 			drawMap();
 			return;
 		}
+		var startDate = '';
+		var endDate = '';
 		var xmlhttp;
 		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
 			xmlhttp=new XMLHttpRequest();
@@ -199,7 +260,7 @@
 		} else if (co2Active) {
 			getURL = "getCo2.php";
 		}
-		xmlhttp.open("GET",getURL+"?nodeid="+nodeActive,true);
+		xmlhttp.open("GET",getURL+"?nodeid="+nodeActive+'&startdate=null&enddate=null',true);
 		xmlhttp.send();
 	}
 	
@@ -227,7 +288,7 @@
 				map = new google.maps.Map(document.getElementById('chart'),
 					mapOptions);
 				
-				for (var i=maxIndex; i>maxIndex-5; i--) {
+				for (var i=maxIndex; i>=0; i--) {
 					var contentString = 'Latitude: ' + latitudes[i] + '<br>' +
 						'Longitude: ' + longitudes[i] + '<br>' +
 						'Date and Time: ' + datetimes[i];
@@ -249,7 +310,20 @@
 				}
 			}
 		}
-		xmlhttp.open("GET","getLocation.php?nodeid="+nodeActive,true);
+		xmlhttp.open("GET","getLocation.php?nodeid="+nodeActive+'&startdate='+startDate+'&enddate='+endDate,true);
+		xmlhttp.send();
+	}
+	
+	function dateTest() {
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange=function() {
+			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+				alert(xmlhttp.responseText);
+			}
+		}
+		startDate = $('#startDate').datepicker('getDate');
+		endDate = $('#endDate').datepicker('getDate');
+		xmlhttp.open('GET','getTestDate.php?nodeid='+nodeActive+'&startdate='+startDate+'&enddate='+endDate,true);
 		xmlhttp.send();
 	}
 	
@@ -302,7 +376,7 @@
 		} else if (co2Active) {
 			getURL = "getCo2.php";
 		}
-		xmlhttp.open("GET",getURL+"?nodeid="+nodeActive,true);
+		xmlhttp.open("GET",getURL+"?nodeid="+nodeActive+'&startdate='+startDate+'&enddate='+endDate,true);
 		xmlhttp.send();
 	}
 	
@@ -364,6 +438,10 @@
 	
 	$(document).ready(function () {
 		$('select').selectBoxIt();
+		$('#startDate').datepicker();
+		$('#endDate').datepicker();
+		
+		$('button').button();
 		
 		$(document).on('change', '.nodeSelect', function() {
 			nodeActive = $(this[this.selectedIndex]).val();
@@ -399,6 +477,22 @@
 				drawTable();
 			}
 		});
+		
+		$(document).on('change', '#startDate', function() {
+			startDate = $('#startDate').datepicker('getDate');
+		});
+		
+		$(document).on('change', '#endDate', function() {
+			endDate = $('#endDate').datepicker('getDate');
+		});
+		
+		$('#submitDate').click(function() {
+			if (graphicActive) {
+				drawGraphic();
+			} else if (tableActive) {
+				drawTable();
+			}
+		});
 	});
 	</script>
 </head>
@@ -423,6 +517,11 @@
 			<option value="table">Table</option>
 		</select>
 	</div>
-	<div id="#responseDiv"><div id="chart" style="width:798px;height:494px;float:left;"></div></div>
+	<div id="chart" style="width:798px;height:495px;float:left;"></div>
+	<div id="dateSelect">
+		<input type="text" id="startDate" placeholder="Start Date" readonly="true">
+		<input type="text" id="endDate" placeholder="End Date" readonly="true">
+		<button id="submitDate">Submit</button>
+	</div>
 	<br clear="all">
 </body>
