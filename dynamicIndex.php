@@ -25,45 +25,48 @@
 	<link rel="stylesheet" href="boxIt.css">
 	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 	<style>
-		html {
-			background-image:url('stardust.png');
-		}
 		body {
 			text-align:center;
-			width:800px;
+			width:100%;
 			margin-left:auto;
 			margin-right:auto;
 			margin-top:0px;
 			margin-bottom:0px;
-			padding:50px;
 			padding-top:0px;
 			font-family:Helvetica, Arial;
 			background-color:#E0E0E0;
+			overflow-y:hidden;
+		}
+		#chartWrapper {
+			background-color:white;
+			width:100%;
+			height:auto;
 		}
 		#chart {
 			border-top:1px solid white;
 			border-left:1px solid white;
 			border-right:1px solid white;
 			border-bottom:none;
-			-moz-box-shadow:    4px 4px 5px 2px darkslategray;
-			-webkit-box-shadow: 4px 4px 5px 2px darkslategray;
-			box-shadow:         4px 4px 5px 2px darkslategray;
+			margin-left:auto;
+			margin-right:auto;
+		}
+		.selectWrapper {
+			background-color:lightslategray;
+			width:100%;
+			height:auto;
 		}
 		#selectors {
 			text-align:left;
 			background-color:lightslategray;
-			float:left;
-			width:798px;
+			width:1080px;
 			height:40px;
-			border-left:1px solid white;
-			border-right:1px solid white;
-			--moz-box-shadow:   4px 4px 5px 2px darkslategray;
-			-webkit-box-shadow: 4px 4px 5px 2px darkslategray;
-			box-shadow:         4px 4px 5px 2px darkslategray;
+			padding-top:10px;
+			margin-left:auto;
+			margin-right:auto;
 		}
 		.selectboxit-container {
-			margin-top:4px;
-			margin-left:69px;
+			margin-top:-1px;
+			margin-left:140px;
 		}
 		.selectboxit-container .selectboxit-options {
 			width:141px;
@@ -154,34 +157,30 @@
 		}
 		#dateSelect {
 			background-color:lightslategray;
-			float:left;
-			width:798px;
+			width:1078px;
 			height:40px;
 			position:relative;
-			border-left:1px solid white;
-			border-right:1px solid white;
-			-moz-box-shadow:   4px 4px 5px 2px darkslategray;
-			-webkit-box-shadow: 4px 4px 5px 2px darkslategray;
-			box-shadow:         4px 4px 5px 2px darkslategray;
+			margin-left:auto;
+			margin-right:auto;
 			font-size:14px;
 		}
 		#startDate {
 			float:left;
-			margin-left:69px;
+			margin-left:140px;
 			margin-top:9px;
 			width:169px;
 			cursor:text;
 		}
 		#endDate {
 			float:left;
-			margin-left:69px;
+			margin-left:140px;
 			margin-top:9px;
 			width:169px;
 			cursor:text;
 		}
 		#submitDate {
 			float:left;
-			margin-left:75px;
+			margin-left:144px;
 			margin-top:8px;
 			width:173px;
 		}
@@ -214,6 +213,10 @@
 			drawMap();
 			return;
 		}
+		var chartHeight = $(window).height();
+		var chartHeight = chartHeight-50;
+		$('#chart').css('height', chartHeight+'px');
+		$('#dateSelectWrapper').css('display', 'none');
 		var startDate = '';
 		var endDate = '';
 		var xmlhttp;
@@ -266,6 +269,10 @@
 	
 	var map;
 	function drawMap() {
+		var chartHeight = $(window).height();
+		var chartHeight = chartHeight-90;
+		$('#chart').css('height', chartHeight+'px');
+		$('#dateSelectWrapper').css('display', 'block');
 		var xmlhttp;
 		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
 			xmlhttp=new XMLHttpRequest();
@@ -314,22 +321,13 @@
 		xmlhttp.send();
 	}
 	
-	function dateTest() {
-		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.onreadystatechange=function() {
-			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-				alert(xmlhttp.responseText);
-			}
-		}
-		startDate = $('#startDate').datepicker('getDate');
-		endDate = $('#endDate').datepicker('getDate');
-		xmlhttp.open('GET','getTestDate.php?nodeid='+nodeActive+'&startdate='+startDate+'&enddate='+endDate,true);
-		xmlhttp.send();
-	}
-	
 	function drawTable() {
 		clearChart();
 		$('#chart').css('overflow-y', 'auto');
+		var chartHeight = $(window).height();
+		var chartHeight = chartHeight-90;
+		$('#chart').css('height', chartHeight+'px');
+		$('#dateSelectWrapper').css('display', 'block');
 		var xmlhttp;
 		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
 			xmlhttp=new XMLHttpRequest();
@@ -381,7 +379,6 @@
 	}
 	
 	function tempClick() {
-		if (tempActive) return;
 		tempActive = true;
 		locationActive = false;
 		radActive = false;
@@ -394,7 +391,6 @@
 	}
 	
 	function locationClick() {
-		if (locationActive) return;
 		tempActive = false;
 		locationActive = true;
 		radActive = false;
@@ -407,7 +403,6 @@
 	}
 	
 	function radClick() {
-		if (radActive) return;
 		tempActive = false;
 		locationActive = false;
 		radActive = true;
@@ -420,7 +415,6 @@
 	}
 	
 	function co2Click() {
-		if (co2Active) return;
 		tempActive = false;
 		locationActive = false;
 		radActive = false;
@@ -498,30 +492,33 @@
 </head>
 
 <body>
-	<img src="caution.gif">
-	<h1>ECEN 403 - Group 22's Project Website</h1>
-	<div id="selectors">
-		<select class="nodeSelect">
-			<?php foreach($nodes as $node) {?>
-				<option value="<?php echo $node[0]; ?>">Node <?php echo $node[0]; ?></option>
-			<?php } ?>
-		</select>
-		<select class="sensorSelect">
-			<option value="temperature">Temperature</option>
-			<option value="location">Location</option>
-			<option value="radiation">Radiation</option>
-			<option value="carbonDioxide">Carbon Dioxide</option>
-		</select>
-		<select class="displaySelect">
-			<option value="graphic">Graphic</option>
-			<option value="table">Table</option>
-		</select>
+	<div class="selectWrapper">
+		<div id="selectors">
+			<select class="nodeSelect">
+				<?php foreach($nodes as $node) {?>
+					<option value="<?php echo $node[0]; ?>">Node <?php echo $node[0]; ?></option>
+				<?php } ?>
+			</select>
+			<select class="sensorSelect">
+				<option value="temperature">Temperature</option>
+				<option value="location">Location</option>
+				<option value="radiation">Radiation</option>
+				<option value="carbonDioxide">Carbon Dioxide</option>
+			</select>
+			<select class="displaySelect">
+				<option value="graphic">Graphic</option>
+				<option value="table">Table</option>
+			</select>
+		</div>
 	</div>
-	<div id="chart" style="width:798px;height:495px;float:left;"></div>
-	<div id="dateSelect">
-		<input type="text" id="startDate" placeholder="Start Date" readonly="true">
-		<input type="text" id="endDate" placeholder="End Date" readonly="true">
-		<button id="submitDate">Submit</button>
+	<div id="chartWrapper">
+		<div id="chart" style="width:1078px;height:495px;"></div>
 	</div>
-	<br clear="all">
+	<div class="selectWrapper" id="dateSelectWrapper">
+		<div id="dateSelect">
+			<input type="text" id="startDate" placeholder="Start Date" readonly="true">
+			<input type="text" id="endDate" placeholder="End Date" readonly="true">
+			<button id="submitDate">Submit</button>
+		</div>
+	</div>
 </body>
