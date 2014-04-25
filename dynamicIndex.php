@@ -16,6 +16,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
+	<meta name="description" content="ECEN 403 Team 22 Project">
+	<meta name="author" content="Blake Robertson">
+	<title>WSN Web App</title>
+	<link rel="shortcut icon" href="favicon.ico">
 	<script src='http://www.google.com/jsapi'></script>
 	<script src='https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false'></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
