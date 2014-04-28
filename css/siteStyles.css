@@ -1,18 +1,4 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="ECEN 403 Team 22 Project">
-	<meta name="author" content="Blake Robertson">
-	<title>Wireless Sensor Network</title>
-	<link rel="shortcut icon" href="favicon.ico">
-	<link href="bootstrap.min.css" rel="stylesheet">
-	<link href="bootstrap-theme.min.css" rel="stylesheet">
-	<style>
-	body {
+body {
   padding-top: 20px;
 }
 
@@ -23,8 +9,7 @@
   border-top: 1px solid #eee;
 }
 
-/* Customize the nav-justified links to be fill the entire space of the .navbar */
-
+/* CSS for top navigation bar */
 .nav-justified {
   background-color: #eee;
   border: 1px solid #ccc;
@@ -97,6 +82,31 @@
   }
 }
 
+/* main index */
+.jumbotron {
+  text-align: center;
+  background-color: transparent;
+}
+.jumbotron .btn {
+  padding: 14px 24px;
+  font-size: 21px;
+}
+
+p.comingSoon {
+	margin-bottom:5px;
+	color:#999;
+}
+
+#iOS {
+	margin-top:2px;
+	margin-right:12px;
+}
+
+#android {
+	margin-left:12px;
+}
+
+/* for how it works and web app info pages */
 .featurette-divider {
   margin: 80px 0; /* Space out the Bootstrap <hr> more */
 }
@@ -108,8 +118,9 @@
   letter-spacing: -1px;
 }
 
+/* for about web app page */
 .preview {
-	background-image:url('preview.png');
+	background-image:url('../images/preview.png');
 	background-repeat:no-repeat;
 	background-position:center; 
 	text-align:center;
@@ -117,51 +128,20 @@
 	padding-bottom:280px;
 }
 
-	</style>
-</head>
+/* for meet the team page */
+.panel-default {
+	margin-top:25px;
+}
 
-<body>
-	<div class="container">
-		<div class="masthead">
-			<h3 class="text-muted">Wireless Sensor Network</h3>
-			<ul class="nav nav-justified">
-				<li><a href="index.html">Home</a></li>
-				<li><a href="howitworks.html">How it Works</a></li>
-				<li class="active"><a href="#">About the Web App</a></li>
-				<li><a href="aboutus.html">About Us</a></li>
-			</ul>
-		</div>
-		<div class="preview">
-			<h1 style="margin-bottom:20px;">See what all the hype is about</h1>
-			<a class="btn btn-lg btn-success" href="../dynamicIndex.php" target="_blank" role="button">Launch the Web App now »</a>
-		</div>
-		<hr class="featurette-divider">
-		<div class="row">
-			<div class="col-md-6">
-				<img src="select.png">
-			</div>
-			<div class="col-md-6">
-				<h3>Choose what node and sensor to view</h3>
-				<p>
-					Using the drop down menus on the top bar, it's simple to change which node and which sensor to view data from. You can even specify whether to see the data in an interactive graphic format or to just view the data in a table.
-				</p>
-			</div>
-		</div>
-		<hr class="featurette-divider">
-		<div class="row">
-			<div class="col-md-6">
-				<h3>Select your own time frame</h3>
-				<p>
-					At the bottom of each graph, map, and table you can select a time frame of the data collected to view. This allows you to zoom in and focus on the data you care about or to see the big picture.
-				</p>
-			</div>
-			<div class="col-md-6">
-				<img src="slider.png">
-			</div>
-		</div>
-		<div class="footer">
-			<p>&copy; ECEN 403/404 Team 22, 2014</p>
-		</div>
-	</div>
-</body>
-</html>
+.panel-body {
+	padding-left:75px;
+	padding-right:75px;
+}
+
+.panel-body h3 {
+	margin-top:10px;
+}
+
+.panel-body h4 {
+	color:#999;
+}

@@ -1,6 +1,7 @@
 <?php
+	/* very similiar to getTemps.php (which has more comments) */
 	date_default_timezone_set("America/Chicago");
-	$db = new PDO("sqlite:database2.sqlite") or die("cannot open the database");
+	$db = new PDO("sqlite:../database2.sqlite") or die("cannot open the database");
 	$nodeId = $_GET["nodeid"];
 	$queryString = "";
 	if ($_GET['startdate'] != 'null' && $_GET['enddate'] != 'null') {
